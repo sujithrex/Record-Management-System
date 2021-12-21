@@ -87,6 +87,42 @@ public function totalRowCount(){
 
 //------------------------------------------
 
+public function datebetween($txtStartDate,$txtEndDate){
+  $sql = "SELECT * FROM tbl_order WHERE time BETWEEN '$txtStartDate' AND '$txtEndDate'";
+  $stmt = $this->conn->prepare($sql);
+  $stmt->execute();
+  $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  foreach ($result as $row) {
+    $data[] = $row;
+  }
+  return $data;
+
+}
+//------------------------------------------
+public function reportDaily($reportMonth,$reportDate){
+  $sql= "SELECT * FROM tbl_order WHERE MONTH(time)= $reportMonth AND DAY(time)= $reportDate";
+  $stmt = $this->conn->prepare($sql);
+  $stmt->execute();
+  $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  foreach ($result as $row) {
+    $data[] = $row;
+  }
+  return $data;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+//------------------------------------------
 }
 
 // $ob =new Database();

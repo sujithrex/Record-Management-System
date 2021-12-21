@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('Asia/Kolkata');
 require_once 'db.php';
 $db = new Database();
 
@@ -14,7 +15,7 @@ if(isset($_POST['action']) && $_POST['action'] == "view"){
           <th>Place</th>
           <th>Event</th>
           <th>Historical Record</th>
-          <th>Bibliography</th>
+          <th>Source</th>
           <th>Note</th>
           <th>Actions</th>
         </tr>
@@ -119,6 +120,108 @@ if(isset($_GET['export']) && $_GET['export'] == "excel"){
   }
   echo '</table>';
 }
+
+if(isset($_POST['action']) && $_POST['action'] == "find"){
+  $output = '';
+  $txtStartDate= $_POST['txtStartDate'];
+  $txtEndDate=$_POST['txtEndDate'];
+  $data = $db->datebetween($txtStartDate,$txtEndDate);
+  if($db->totalRowCount()>0){
+    $output .= '<table class="table table-striped table-sm table-bordered">
+      <thead>
+        <tr class="text-center">
+          <th>Unique ID</th>
+          <th>Time Stamp</th>
+          <th>Place</th>
+          <th>Event</th>
+          <th>Historical Record</th>
+          <th>Source</th>
+          <th>Note</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>';
+      foreach ($data as $row) {
+        $output .=
+        '<tr class= "text-center text-secondary">
+        <td>'.$row['rid'].'</td>
+        <td>'.$row['time'].'</td>
+        <td>'.$row['place'].'</td>
+        <td>'.$row['event'].'</td>
+        <td>'.$row['history_data'].'</td>
+        <td>'.$row['source'].'</td>
+        <td>'.$row['note'].'</td>
+        <td>
+        <a href="#" title="View Details" class = "text-success infoBtn" id= "'.$row['rid'].'"><i class= "fas fa-info-circle fa-lg"></i></a>&nbsp;&nbsp;
+        <a href="#" title="Edit" class = "text-primary editBtn" id= "'.$row['rid'].'" data-toggle="modal" data-target= "#editModal"><i class= "fas fa-edit fa-lg"></i></a>&nbsp;&nbsp;
+        <a href="#" title="Delete" class = "text-danger delBtn"id= "'.$row['rid'].'"><i class= "fas fa-trash-alt fa-lg"></i></a>
+        </td></tr>';
+      }
+      $output .='</tbody></table>';
+      echo $output;
+  }
+  else {
+    echo '<h3 class="text-center text-secondary mt-5"> :) No Record Found in the DataBase!! </h3>';
+  }
+
+}
+
+
+
+
+
+if(isset($_POST['action']) && $_POST['action'] == "report"){
+  $output = '';
+  $reportMonth=date("m");
+  $reportDate=date("d");
+  $data= $db->reportDaily($reportMonth,$reportDate);
+  if($db->totalRowCount()>0){
+    $output .= '<table class="table table-striped table-sm table-bordered">
+      <thead>
+        <tr class="text-center">
+          <th>Unique ID</th>
+          <th>Time Stamp</th>
+          <th>Place</th>
+          <th>Event</th>
+          <th>Historical Record</th>
+          <th>Source</th>
+          <th>Note</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>';
+      foreach ($data as $row) {
+        $output .=
+        '<tr class= "text-center text-secondary">
+        <td>'.$row['rid'].'</td>
+        <td>'.$row['time'].'</td>
+        <td>'.$row['place'].'</td>
+        <td>'.$row['event'].'</td>
+        <td>'.$row['history_data'].'</td>
+        <td>'.$row['source'].'</td>
+        <td>'.$row['note'].'</td>
+        <td>
+        <a href="#" title="View Details" class = "text-success infoBtn" id= "'.$row['rid'].'"><i class= "fas fa-info-circle fa-lg"></i></a>&nbsp;&nbsp;
+        <a href="#" title="Edit" class = "text-primary editBtn" id= "'.$row['rid'].'" data-toggle="modal" data-target= "#editModal"><i class= "fas fa-edit fa-lg"></i></a>&nbsp;&nbsp;
+        <a href="#" title="Delete" class = "text-danger delBtn"id= "'.$row['rid'].'"><i class= "fas fa-trash-alt fa-lg"></i></a>
+        </td></tr>';
+      }
+      $output .='</tbody></table>';
+      echo $output;
+  }
+  else {
+    echo '<h3 class="text-center text-secondary mt-5"> :) No Record Found in the DataBase!! </h3>';
+  }
+
+}
+
+
+
+
+
+
+
+
 
 
  ?>

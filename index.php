@@ -10,8 +10,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title> Record Management System</title>
+
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.11.3/datatables.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.css" />
+
 </head>
 
 
@@ -35,10 +38,10 @@
   <div class="collapse navbar-collapse" id="collapsibleNavbar">
     <ul class="navbar-nav ml-auto">
       <li class="nav-item">
-        <a class="nav-link" href="#">Home</a>
+        <a class="nav-link" href="home.php">Home</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Entries</a>
+        <a class="nav-link" href="index.php">Entries</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#">Filter</a>
@@ -60,11 +63,43 @@
       <h4 class="mt-2 text-primary">All Entries in the database</h4>
     </div>
     <div class="col-lg-6">
+        <button type="button" name="button" class="btn btn-primary m-1 float-right" data-toggle = "modal" data-target="#findModal"> <i class=" fas fa-user-plus fa-lg"></i>&nbsp;&nbsp;Find By Date</button>
       <button type="button" name="button" class="btn btn-primary m-1 float-right" data-toggle = "modal" data-target="#addModal"> <i class=" fas fa-user-plus fa-lg"></i>&nbsp;&nbsp;Add New Entry</button>
       <a href="action.php?export=excel" class="btn btn-success m-1 float-right"><i class="fas fa-table fa-lg"></i>&nbsp;&nbsp; Export to Excel</a>
     </div>
-
   </div>
+
+<
+
+
+
+<!-- ! Date Filter Bar -->
+<div class="modal fade" id="findModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Find Entry</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div><br />
+      <div class="modal-sm" >
+        <form action="" method="post"id="date-form-data">
+          <div class="input-daterange" >
+            <input type="text" name="txtStartDate" id="txtStartDate" required class="form-control" >
+          </div><br />
+          <div class="input-daterange">
+            <input type="text" name="txtEndDate" id="txtEndDate" required class="form-control">
+          </div><br />
+          <div class="form-group">
+            <input type="submit" name="find" id="find" value="Find" class="btn btn-danger btn-block">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
   <!-- TABLE  -->
@@ -205,6 +240,8 @@
 <script src="assets\fontawsome\js\all.js" crossorigin="anonymous"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.11.3/datatables.min.js"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.js"></script>
+<!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
 
 
 <script type="text/javascript">
@@ -348,6 +385,38 @@ $("body").on("click", ".infoBtn", function(e){
       });
     }
   });
+});
+
+
+
+
+//
+// Time
+
+$('.input-daterange').datepicker({
+todayBtn:'linked',
+format: "yyyy-mm-dd",
+autoclose: true
+});
+
+
+$("#find").click(function(e){
+  if($("#date-form-data")[0].checkValidity()){
+    e.preventDefault();
+    $.ajax({
+      url: "action.php",
+      type: "POST",
+      data: $("#date-form-data").serialize()+"&action=find",
+      success:function(response){
+        // $("#edit-form-data")[0].reset();
+        // showAllEntries();
+        // data=JSON.parse(response);
+        $("#showRecord").html(response);
+        $("#findModal").modal('hide');
+        $("table").DataTable();
+      }
+    });
+  }
 });
 
 
